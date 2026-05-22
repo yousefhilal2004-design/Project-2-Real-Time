@@ -1,5 +1,5 @@
 /*
- * logger.c  —  Anwar Atawna
+ * logger.c 
  * ---------------------------
  * Centralised logging service.  Every other process sends MSG_LOG here.
  *
