@@ -1,5 +1,5 @@
 /*
- * shared.h  —  Anwar Atawna
+ * shared.h 
  * -------------------------
  * Defines SharedData — the single struct that lives in shared memory.
  * Every process attaches to the same SHM segment and reads/writes
