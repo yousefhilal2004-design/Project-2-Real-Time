@@ -1,5 +1,5 @@
 /*
- * vehicle_detector.c  —  Anwar Atawna
+ * vehicle_detector.c  
  * -------------------------------------
  * Simulates vehicle arrival and departure at each approach.
  *
