@@ -1,5 +1,5 @@
 /*
- * traffic_light.c  —  Anwar Atawna
+ * traffic_light.c  
  * ----------------------------------
  * Represents one traffic light (one process per direction).
  * Usage:  ./traffic_light <direction>    0=NORTH  1=SOUTH  2=EAST  3=WEST
