@@ -36,8 +36,9 @@ typedef struct {
     int vehicle_count[NUM_DIRECTIONS];
 
     /* --- Pedestrian crossing state --- */
-    int pedestrian_request;   /* 1 = request pending, cleared by controller  */
-    int pedestrian_active;    /* 1 = walk signal currently active            */
+    int pedestrian_request;    /* 1 = request pending, cleared by controller  */
+    int pedestrian_active;     /* 1 = walk signal currently active            */
+    int pedestrian_direction;  /* which direction crossing was requested (0-3)*/
 
     /* --- Emergency vehicle state --- */
     int emergency_mode;       /* 1 = system in emergency mode                */
