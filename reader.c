@@ -1,5 +1,5 @@
 /*
- * reader.c  —  Anwar Atawna
+ * reader.c  
  * -------------------------
  * Diagnostic tool: attaches to SHM and prints a snapshot every second.
  * Useful for checking the system state without the OpenGL UI.
