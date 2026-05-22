@@ -1,8 +1,4 @@
-# =============================================================
-# Makefile — Real-Time Traffic Light Control System
-# Anwar Atawna — Linux IPC Project
-# =============================================================
-#
+
 # Targets:
 #   make            — build all binaries (except opengl_ui)
 #   make opengl_ui  — build OpenGL visualizer (needs freeglut3-dev)
