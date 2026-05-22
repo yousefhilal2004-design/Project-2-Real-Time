@@ -10,7 +10,7 @@
  *
  *   Each approach has two signal heads:
  *     Main head   (3 circles R/Y/G)    — straight + right signal
- *     Arrow head  (3 circles R/Y/G←)  — protected left-turn arrow
+ *     Arrow head  (3 circles R/Y/G<-)  — protected left-turn arrow
  *
  * Animation:
  *   g_anim[d]      — rolling offset for straight/right lane (driven by light[d])
@@ -118,7 +118,6 @@ static void set_bulb_color(int bulb_state, int active) {
 
 /* ------------------------------------------------------------------ */
 /* draw_signal_head: vertical 3-bulb housing                          */
-/* cx,cy = centre; hw,hh = half-widths; sp = bulb spacing; r = radius */
 /* ------------------------------------------------------------------ */
 static void draw_signal_head(float cx, float cy,
                               float hw, float hh, float sp, float r,
@@ -151,14 +150,11 @@ static void draw_traffic_light(float cx, float cy, int dir) {
 
 /* ------------------------------------------------------------------ */
 /* draw_left_signal: smaller left-turn arrow head                     */
-/*   Positioned adjacent to the main signal per direction.            */
-/*   An "←" label marks it as a left-turn arrow.                      */
 /* ------------------------------------------------------------------ */
 static void draw_left_signal(float cx, float cy, int dir) {
     int lst = g_snap.left_light[dir];
     draw_signal_head(cx, cy, 14.0f, 44.0f, 26.0f, 9.0f, lst);
 
-    /* "←" label */
     glColor3f(0.9f, 0.9f, 0.9f);
     draw_text(cx - 5.0f, cy - 44.0f - 10.0f, "<-");
 }
@@ -190,8 +186,6 @@ static void draw_car(float cx, float cy, int vert, int idx) {
 
 /* ------------------------------------------------------------------ */
 /* draw_through_cars: straight/right-turn lane                        */
-/* Lane offsets: NORTH/SOUTH use LANE_THROUGH along x-axis;           */
-/*               EAST/WEST  use LANE_THROUGH along y-axis.            */
 /* ------------------------------------------------------------------ */
 static void draw_through_cars(int dir) {
     int count = g_snap.vehicle_count[dir];
@@ -219,7 +213,6 @@ static void draw_through_cars(int dir) {
 
 /* ------------------------------------------------------------------ */
 /* draw_left_turn_cars: left-turn lane                                 */
-/* Cars are drawn closer to the centre line; fixed queue of LEFT_CARS */
 /* ------------------------------------------------------------------ */
 static void draw_left_turn_cars(int dir) {
     float cx  = WIN_W / 2.0f;
@@ -238,7 +231,6 @@ static void draw_left_turn_cars(int dir) {
         case WEST:  x = cx - ROAD_W - dist; y = cy - LANE_LEFT; break;
         default: continue;
         }
-        /* Use a distinct colour offset for left-turn cars */
         draw_car(x, y, (dir == NORTH || dir == SOUTH), i + 4);
     }
 }
@@ -249,7 +241,6 @@ static void draw_left_turn_cars(int dir) {
 static void update_anim(void) {
     float dt = 1.0f / (float)FPS;
     for (int d = 0; d < NUM_DIRECTIONS; d++) {
-        /* Straight/right lane — driven by light[d] */
         if (g_snap.light[d] == GREEN) {
             g_anim[d] += CAR_SPEED * dt;
             if (g_anim[d] >= CAR_SPACING) g_anim[d] -= CAR_SPACING;
@@ -260,7 +251,6 @@ static void update_anim(void) {
             }
         }
 
-        /* Left-turn lane — driven by left_light[d] */
         if (g_snap.left_light[d] == GREEN) {
             g_left_anim[d] += CAR_SPEED * dt;
             if (g_left_anim[d] >= CAR_SPACING) g_left_anim[d] -= CAR_SPACING;
@@ -289,14 +279,13 @@ static void draw_intersection(void) {
     glColor3f(0.34f, 0.34f, 0.34f);
     draw_rect(cx, cy, ROAD_W, ROAD_W);
 
-    /* ---- Lane dividers (dashed white) within each approach ---- */
+    /* ---- Lane dividers (dashed white) ---- */
     glColor3f(0.9f, 0.9f, 0.9f);
     glLineWidth(1.5f);
     glBegin(GL_LINES);
-    /* NS road — lane divider at x = cx-LANE_LEFT*1.8 (between left and through lanes) */
     {
-        float lx_n = cx - ROAD_W * 0.42f;   /* north side lane split */
-        float lx_s = cx + ROAD_W * 0.42f;   /* south side lane split */
+        float lx_n = cx - ROAD_W * 0.42f;
+        float lx_s = cx + ROAD_W * 0.42f;
         float dash = 14.0f, gap = 10.0f;
         for (float y = cy + ROAD_W; y < WIN_H; y += dash + gap) {
             glVertex2f(lx_n, y); glVertex2f(lx_n, y + dash);
@@ -304,7 +293,6 @@ static void draw_intersection(void) {
         for (float y = 0; y < cy - ROAD_W; y += dash + gap) {
             glVertex2f(lx_s, y); glVertex2f(lx_s, y + dash);
         }
-        /* EW road */
         float ly_e = cy + ROAD_W * 0.42f;
         float ly_w = cy - ROAD_W * 0.42f;
         for (float x = cx + ROAD_W; x < WIN_W; x += dash + gap) {
@@ -316,14 +304,14 @@ static void draw_intersection(void) {
     }
     glEnd();
 
-    /* Stop lines (white, solid) */
+    /* Stop lines */
     glColor3f(1.0f, 1.0f, 1.0f);
     glLineWidth(2.5f);
     glBegin(GL_LINES);
-    glVertex2f(cx - ROAD_W, cy + ROAD_W); glVertex2f(cx, cy + ROAD_W);  /* N */
-    glVertex2f(cx, cy - ROAD_W); glVertex2f(cx + ROAD_W, cy - ROAD_W);  /* S */
-    glVertex2f(cx + ROAD_W, cy); glVertex2f(cx + ROAD_W, cy + ROAD_W);  /* E */
-    glVertex2f(cx - ROAD_W, cy - ROAD_W); glVertex2f(cx - ROAD_W, cy);  /* W */
+    glVertex2f(cx - ROAD_W, cy + ROAD_W); glVertex2f(cx, cy + ROAD_W);
+    glVertex2f(cx, cy - ROAD_W); glVertex2f(cx + ROAD_W, cy - ROAD_W);
+    glVertex2f(cx + ROAD_W, cy); glVertex2f(cx + ROAD_W, cy + ROAD_W);
+    glVertex2f(cx - ROAD_W, cy - ROAD_W); glVertex2f(cx - ROAD_W, cy);
     glEnd();
 
     /* Yellow dashed centre lines */
@@ -345,24 +333,55 @@ static void draw_intersection(void) {
     glEnd();
     glLineWidth(1.0f);
 
-    /* Pedestrian crossing zebra stripes */
+    /* Pedestrian crossing zebra stripes — direction-specific */
     if (g_snap.pedestrian_active) {
-        int blink = (g_tick / (FPS / 2)) % 2;
-        float alpha = blink ? 0.85f : 0.45f;
+        int   blink = (g_tick / (FPS / 2)) % 2;
+        float alpha = blink ? 0.90f : 0.50f;
+        float sw    = 9.0f, sg = 13.0f;
+        int   ns    = 4;
+
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glColor4f(1.0f, 1.0f, 1.0f, alpha);
-        float stripe_h = 10.0f, stripe_gap = 16.0f;
-        for (int i = 0; i < 4; i++) {
-            float sy = cy - ROAD_W + 8.0f + (float)i * stripe_gap;
-            glBegin(GL_QUADS);
-            glVertex2f(cx-ROAD_W-55,sy);    glVertex2f(cx-ROAD_W,sy);
-            glVertex2f(cx-ROAD_W,sy+stripe_h); glVertex2f(cx-ROAD_W-55,sy+stripe_h);
-            glEnd();
-            glBegin(GL_QUADS);
-            glVertex2f(cx+ROAD_W,sy);    glVertex2f(cx+ROAD_W+55,sy);
-            glVertex2f(cx+ROAD_W+55,sy+stripe_h); glVertex2f(cx+ROAD_W,sy+stripe_h);
-            glEnd();
+
+        switch (g_snap.pedestrian_direction) {
+        case NORTH:
+            for (int i = 0; i < ns; i++) {
+                float sy = cy + ROAD_W + 5.0f + (float)i * (sw + sg);
+                glBegin(GL_QUADS);
+                glVertex2f(cx - ROAD_W, sy);      glVertex2f(cx + ROAD_W, sy);
+                glVertex2f(cx + ROAD_W, sy + sw); glVertex2f(cx - ROAD_W, sy + sw);
+                glEnd();
+            }
+            break;
+        case SOUTH:
+            for (int i = 0; i < ns; i++) {
+                float sy = cy - ROAD_W - 5.0f - (float)i * (sw + sg) - sw;
+                glBegin(GL_QUADS);
+                glVertex2f(cx - ROAD_W, sy);      glVertex2f(cx + ROAD_W, sy);
+                glVertex2f(cx + ROAD_W, sy + sw); glVertex2f(cx - ROAD_W, sy + sw);
+                glEnd();
+            }
+            break;
+        case EAST:
+            for (int i = 0; i < ns; i++) {
+                float sx = cx + ROAD_W + 5.0f + (float)i * (sw + sg);
+                glBegin(GL_QUADS);
+                glVertex2f(sx,      cy - ROAD_W); glVertex2f(sx + sw, cy - ROAD_W);
+                glVertex2f(sx + sw, cy + ROAD_W); glVertex2f(sx,      cy + ROAD_W);
+                glEnd();
+            }
+            break;
+        case WEST:
+            for (int i = 0; i < ns; i++) {
+                float sx = cx - ROAD_W - 5.0f - (float)i * (sw + sg) - sw;
+                glBegin(GL_QUADS);
+                glVertex2f(sx,      cy - ROAD_W); glVertex2f(sx + sw, cy - ROAD_W);
+                glVertex2f(sx + sw, cy + ROAD_W); glVertex2f(sx,      cy + ROAD_W);
+                glEnd();
+            }
+            break;
+        default: break;
         }
         glDisable(GL_BLEND);
     }
@@ -388,48 +407,18 @@ static void display(void) {
     draw_through_cars(EAST);  draw_left_turn_cars(EAST);
     draw_through_cars(WEST);  draw_left_turn_cars(WEST);
 
-    /*
-     * Signal positions — all placed in the grass corners, clear of roads and cars.
-     *
-     * Road occupies x=[cx-ROAD_W, cx+ROAD_W], y=[cy-ROAD_W, cy+ROAD_W].
-     *   cx=470  cy=360  ROAD_W=80
-     *
-     * NORTH approach (NW grass corner, x<390, y>440):
-     *   main signal at (350, 530)  — faces northbound traffic
-     *   left signal  at (350, 460) — closer to stop line
-     *
-     * SOUTH approach (SE grass corner, x>550, y<280):
-     *   main signal at (590, 190)  — faces southbound traffic
-     *   left signal  at (590, 255) — closer to stop line
-     *
-     * EAST approach (NE grass corner, x>550, y>440):
-     *   main signal at (720, 480)  — faces eastbound traffic
-     *   left signal  at (630, 480) — closer to stop line
-     *
-     * WEST approach (SW grass corner, x<390, y<280):
-     *   main signal at (220, 240)  — faces westbound traffic
-     *   left signal  at (320, 240) — closer to stop line
-     */
-
     /* ---- Main straight signals ---- */
     draw_traffic_light(cx,          cy + 215.0f, NORTH);
     draw_traffic_light(cx,          cy - 215.0f, SOUTH);
     draw_traffic_light(cx + 250.0f, cy,          EAST);
     draw_traffic_light(cx - 250.0f, cy,          WEST);
 
-    /*
-     * Left-turn arrow signals — placed on the side toward which each
-     * direction turns left (driver's left = screen-right for N, etc.)
-     *
-     * NORTH heading south → turns left (East)  → signal right of main
-     * SOUTH heading north → turns left (West)  → signal left of main
-     * EAST  heading west  → turns left (South) → signal below main
-     * WEST  heading east  → turns left (North) → signal above main
-     */
-    draw_left_signal(cx + 55.0f,         cy + 215.0f, NORTH);
-    draw_left_signal(cx - 55.0f,         cy - 215.0f, SOUTH);
-    draw_left_signal(cx + 200.0f,        cy - 10.0f,  EAST);
-    draw_left_signal(cx - 200.0f,        cy - 10.00f,  WEST);
+    /* ---- Left-turn arrow signals ---- */
+    draw_left_signal(cx + 55.0f,  cy + 215.0f, NORTH);
+    draw_left_signal(cx - 55.0f,  cy - 215.0f, SOUTH);
+    draw_left_signal(cx + 250.0f, cy - 90.0f,  EAST);
+    draw_left_signal(cx - 250.0f, cy + 90.0f,  WEST);
+
     /* ---- Status bar ---- */
     glColor3f(0.05f, 0.05f, 0.05f);
     glBegin(GL_QUADS);
@@ -446,19 +435,35 @@ static void display(void) {
              g_snap.vehicle_count[EAST],  g_snap.vehicle_count[WEST]);
     draw_text18(10.0f, WIN_H - 30.0f, status);
 
-    /* ---- Pedestrian WALK label ---- */
+    /* ---- Pedestrian WALK label with direction ---- */
     if (g_snap.pedestrian_active) {
         int blink = (g_tick / (FPS / 2)) % 2;
-        if (blink) { glColor3f(1.0f,1.0f,0.0f); draw_text18(cx-22.0f,cy+8.0f,"WALK"); }
+        if (blink) {
+            glColor3f(1.0f, 1.0f, 0.0f);
+            char wbuf[32];
+            snprintf(wbuf, sizeof(wbuf), "WALK [%s]",
+                     dir_str(g_snap.pedestrian_direction));
+            draw_text18(cx - 42.0f, cy + 8.0f, wbuf);
+        }
     }
 
     if (g_snap.pedestrian_request && !g_snap.pedestrian_active) {
         glColor3f(1.0f, 0.55f, 0.0f);
-        draw_text(cx - 32.0f, cy + 95.0f, "PED REQUEST");
+        char preqbuf[48];
+        snprintf(preqbuf, sizeof(preqbuf), "PED REQUEST [%s]",
+                 dir_str(g_snap.pedestrian_direction));
+        draw_text(cx - 48.0f, cy + 95.0f, preqbuf);
     }
 
     /* ---- Emergency overlay ---- */
     if (g_snap.emergency_mode) {
+        /* Derive direction from whichever light is GREEN — guaranteed correct
+           even across binary reloads, since light[] is always at offset 0. */
+        int emdir = g_snap.emergency_direction;
+        for (int d = 0; d < NUM_DIRECTIONS; d++) {
+            if (g_snap.light[d] == GREEN) { emdir = d; break; }
+        }
+
         int blink = (g_tick / (FPS / 5)) % 2;
         if (blink) {
             glEnable(GL_BLEND);
@@ -469,8 +474,7 @@ static void display(void) {
         }
         glColor3f(1.0f, 0.25f, 0.25f);
         char emsg[64];
-        snprintf(emsg, sizeof(emsg), "*** EMERGENCY: %s ***",
-                 dir_str(g_snap.emergency_direction));
+        snprintf(emsg, sizeof(emsg), "*** EMERGENCY: %s ***", dir_str(emdir));
         draw_text18(cx - 90.0f, WIN_H - 68.0f, emsg);
     }
 
