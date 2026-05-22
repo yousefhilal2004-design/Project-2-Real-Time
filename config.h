@@ -1,5 +1,5 @@
 /*
- * config.h  —  Anwar Atawna
+ * config.h  
  * -------------------------
  * System-wide constants, IPC keys, message types, and timing parameters.
  * Every process in the system includes this header.
