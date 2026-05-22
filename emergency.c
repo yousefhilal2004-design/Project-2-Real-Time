@@ -1,5 +1,5 @@
 /*
- * emergency.c  —  Anwar Atawna
+ * emergency.c  
  * --------------------------------
  * Emergency vehicle detection process.
  *
