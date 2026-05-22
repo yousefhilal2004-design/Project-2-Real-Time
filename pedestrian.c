@@ -1,5 +1,5 @@
 /*
- * pedestrian.c  —  Anwar Atawna
+ * pedestrian.c 
  * --------------------------------
  * Pedestrian crossing request process.
  *
