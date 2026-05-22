@@ -1,5 +1,5 @@
 /*
- * controller.c  —  Anwar Atawna
+ * controller.c  
  * ------------------------------
  * The "brain" of the traffic light system.
  *
