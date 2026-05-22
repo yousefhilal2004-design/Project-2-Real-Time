@@ -549,7 +549,7 @@ int main(int argc, char *argv[]) {
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowSize(WIN_W, WIN_H);
     glutInitWindowPosition(80, 40);
-    glutCreateWindow("Traffic Light IPC System — Anwar Atawna");
+    glutCreateWindow("Traffic Light IPC System");
 
     glClearColor(0.13f, 0.24f, 0.13f, 1.0f);
     glEnable(GL_LINE_SMOOTH);
