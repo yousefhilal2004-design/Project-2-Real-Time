@@ -1,5 +1,5 @@
 /*
- * safety_monitor.c  —  Anwar Atawna
+ * safety_monitor.c   
  * ------------------------------------
  * Independent safety watchdog process.
  *
