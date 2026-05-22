@@ -1,5 +1,5 @@
 /*
- * opengl_ui.c  —  Anwar Atawna
+ * opengl_ui.c  
  * --------------------------------
  * Real-time OpenGL/GLUT visualization of the traffic light system.
  *
