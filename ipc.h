@@ -1,5 +1,5 @@
 /*
- * ipc.h  —  Anwar Atawna
+ * ipc.h
  * ----------------------
  * Public interface for all IPC operations:
  *   - Shared memory lifecycle
