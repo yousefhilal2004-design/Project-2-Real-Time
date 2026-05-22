@@ -1,5 +1,5 @@
 /*
- * main.c  —  Anwar Atawna
+ * main.c 
  * -----------------------
  * Master / supervisor process.
  *
