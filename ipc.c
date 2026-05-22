@@ -1,5 +1,5 @@
 /*
- * ipc.c  —  Anwar Atawna
+ * ipc.c  
  * ----------------------
  * Implements all IPC primitives:
  *   - Shared memory (SHM) creation and lifecycle
